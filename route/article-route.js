@@ -1,18 +1,56 @@
 
-const article = require("./../model/article-model.js");
-module.exports = function(app){
+const Article = require("./../model/article-model.js");
+module.exports = function (app) {
 
-  
-    app.get('/', (req, res) => res.send('Hello World!'))
+    app.post('/article/createArticle', function (req, res) {
 
-    app.post('/createArticle', function (req, res) {
-  
-     console.log(req.body);
-     article.createArticle(req.body,function(result){
+        var article = new Article(req.body);
+        article.save(function (err, result) {
+            if (err) res.status(400).send({ error: err });
+            else {
+                res.status(200).send(result);
+            }
+        });
 
-        res.send('Article was created succesfully');
-     });
 
-      })
+    })
+
+    app.get('/article/allArticle', function (req, res) {
+        Article.find(function (err, result) {
+            if (err) res.status(400).send({ error: err });
+            else
+                res.status(200).send(result);
+
+        })
+    })
+
+    app.get('/article/:id', function (req, res) {
+
+        Article.findById(req.params.id, function (err, article) {
+            if (err) res.status(400).send({ error: err });
+            res.status(200).send(article);
+        });
+
+    })
+
+
+    app.put('/article/:id', function (req, res) {
+
+        Article.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, article) {
+            if (err) res.status(400).send({ error: err });
+            res.status(200).send(article);
+        });
+
+    })
+
+    app.delete('/article/:id', function (req, res) {
+
+        Article.findByIdAndRemove(req.params.id, function (err, result) {
+
+            if (err) res.status(400).send({ error: err });
+            res.status(200).send(result);
+        });
+
+    })
 
 }
