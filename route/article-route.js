@@ -2,6 +2,7 @@
 const Article = require("./../model/article-model.js");
 module.exports = function (app) {
 
+
     app.post('/article/createArticle', function (req, res) {
 
         var article = new Article(req.body);
@@ -52,5 +53,10 @@ module.exports = function (app) {
         });
 
     })
+
+    app.get('/', function (req, res) {
+        res.send("Rest API For the Blog. Use a rest api client to test it.")
+    })
+
 
 }
